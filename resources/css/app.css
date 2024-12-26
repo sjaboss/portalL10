@@ -1,0 +1,16 @@
+/* Prefijo para Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reset para elementos Bootstrap */
+.bootstrap-only * {
+    all: revert;
+}
+
+/* Contenedor para componentes Tailwind */
+@layer components {
+    .tailwind-component {
+        @apply font-sans antialiased;
+    }
+}
