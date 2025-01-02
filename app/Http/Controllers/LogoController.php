@@ -40,14 +40,12 @@ class LogoController extends Controller
     public function store(Request $request)
     {
         Log::info('Starting store method with request data:', $request->all());
-        
+
         $request->validate([
             'nombre' => 'required|max:255|unique:logos,nombre',
-            'orden' => 'required|integer|unique:logos,orden',
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ], [
             'nombre.unique' => 'Ya existe un logo con este nombre.',
-            'orden.unique' => 'Ya existe un logo con este orden.',
             'foto.required' => 'La imagen es obligatoria.',
             'foto.image' => 'El archivo debe ser una imagen.',
             'foto.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg, gif.',
@@ -55,7 +53,7 @@ class LogoController extends Controller
         ]);
 
         try {
-            $data = $request->only(['nombre', 'orden']);
+            $data = $request->only(['nombre']);
             Log::info('Base data:', $data);
 
             if ($request->hasFile('foto')) {

@@ -44,10 +44,10 @@
                             <div class="dropzone-container position-relative">
                                 <input type="file" id="foto" name="foto" class="form-control pe-5 @error('foto') is-invalid @enderror" accept="image/*">
                                 <input type="hidden" name="image_urls" id="image_urls">
-                                
+
                                 <div class="image-preview-container mt-3">
                                     <img id="preview" class="img-thumbnail mt-2" src="" alt="" style="max-width: 300px; display: none;">
-                                    
+
                                     <!-- Contenedor de miniaturas -->
                                     <div class="thumbnails-container mt-2" style="display: none;">
                                         <div class="d-flex gap-2">
@@ -100,7 +100,6 @@
 
 @push('scripts')
 <script>
-    // Prevenir múltiples envíos del formulario
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('form');
         const submitButton = document.getElementById('submitButton');
@@ -120,65 +119,16 @@
         // Vista previa de la imagen
         const photoInput = document.querySelector('#foto');
         const photoPreview = document.querySelector('#preview');
-        
-        photoInput.addEventListener('change', async function(e) {
+
+        photoInput.addEventListener('change', function(e) {
             const file = this.files[0];
             if (file) {
-                // Mostrar vista previa inmediata
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     photoPreview.src = e.target.result;
                     photoPreview.style.display = 'block';
                 }
                 reader.readAsDataURL(file);
-
-                // Mostrar barra de progreso
-                const progress = document.querySelector('.progress');
-                const progressBar = document.querySelector('.progress-bar');
-                progress.style.display = 'block';
-                progressBar.style.width = '0%';
-
-                // Preparar FormData para subida
-                const formData = new FormData();
-                formData.append('image', file);
-
-                try {
-                    // Subir imagen
-                    const response = await fetch('/images/upload', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        // Actualizar vistas previas
-                        const previewThumb = document.querySelector('#preview-thumb');
-                        const previewMedium = document.querySelector('#preview-medium');
-                        const thumbnailsContainer = document.querySelector('.thumbnails-container');
-                        previewThumb.src = data.urls.thumb;
-                        previewMedium.src = data.urls.medium;
-                        thumbnailsContainer.style.display = 'block';
-                        
-                        // Guardar URLs para el formulario
-                        const imageUrlsInput = document.querySelector('#image_urls');
-                        imageUrlsInput.value = JSON.stringify(data.urls);
-                        
-                        // Actualizar barra de progreso
-                        progressBar.style.width = '100%';
-                        setTimeout(() => {
-                            progress.style.display = 'none';
-                        }, 1000);
-                    }
-                } catch (error) {
-                    console.error('Error al subir la imagen:', error);
-                    alert('Error al subir la imagen. Por favor, intente nuevamente.');
-                    progressBar.style.width = '0%';
-                    progress.style.display = 'none';
-                }
             }
         });
     });
@@ -195,14 +145,6 @@
 
 .dropzone-container:hover {
     border-color: #0d6efd;
-}
-
-.progress {
-    height: 10px;
-}
-
-.thumbnail-preview {
-    text-align: center;
 }
 </style>
 @endpush
